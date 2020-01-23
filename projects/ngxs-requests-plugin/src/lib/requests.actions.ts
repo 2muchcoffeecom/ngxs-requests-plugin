@@ -1,5 +1,5 @@
 export class CreateRequest<T = any, U = any, I = any> {
-  static type = '[Requests] Create Request';
+  static type = '[Request] Start';
 
   constructor(
     public payload: {
@@ -14,14 +14,14 @@ export class CreateRequest<T = any, U = any, I = any> {
 }
 
 export class CreateRequestSuccess {
-  static type = '[Requests] Create Request Success';
+  static type = '[Request] Success';
 
   constructor(public payload: any, public path: string) {
   }
 }
 
 export class CreateRequestFail {
-  static type = '[Requests] Create Request Fail';
+  static type = '[Request] Fail';
 
   constructor(public payload: any, public path: string) {
   }
