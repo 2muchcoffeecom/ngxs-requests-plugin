@@ -1,6 +1,6 @@
 {
   "name": "ngxs-requests-plugin",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/2muchcoffeecom/ngxs-requests-plugin.git"
