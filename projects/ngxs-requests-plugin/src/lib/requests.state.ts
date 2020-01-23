@@ -30,7 +30,7 @@ export class RequestsState {
         const failActions = [
           new CreateRequestFail(error, path),
         ];
-        if (payload.successAction) {
+        if (payload.failAction) {
           failActions.push(new payload.failAction(error));
         }
         return ctx.dispatch(failActions).pipe(
