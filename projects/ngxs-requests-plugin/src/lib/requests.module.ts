@@ -1,58 +1,50 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { NGXS_PLUGINS, NgxsModule, State } from '@ngxs/store';
-import { NGXS_REQUEST_PLUGIN_OPTIONS, NgxsRequestsPlugin } from './requests.service';
-import { __decorate } from 'tslib';
-
+import { ɵd as FEATURE_STATE_TOKEN } from '@ngxs/store';
+import { StateClass } from '@ngxs/store/internals';
+import { NGXS_REQUEST_PLUGIN_REQUESTS_PATH_OPTIONS, NGXS_REQUEST_PLUGIN_STATE_CLASSES, NgxsRequestsPlugin } from './requests.service';
 import { RequestsState } from './requests.state';
-import { states } from './util';
 
-export function createModule(moduleClass, name) {
-  __decorate(
-    [
-      NgModule({
-        imports: [
-          NgxsModule.forFeature([
-            createRequestsState(name),
-            ...states,
-          ])
-        ]
-      })
-    ], moduleClass
-  );
 
-  return moduleClass;
+export function stateClassFactory(name: string, states: StateClass[]) {
+  State({
+    name,
+    children: states
+  })(RequestsState);
+  return [RequestsState, ...states];
 }
 
-export function createRequestsState(name) {
-  const stateClass = RequestsState;
-
-  __decorate(
-    [
-      State({
-        name,
-        children: states,
-        defaults: {}
-      })
-    ], stateClass
-  );
-
-  return stateClass;
-}
-
+@NgModule({
+  imports: [
+    NgxsModule.forFeature(),
+  ]
+})
 export class RequestsModule {
-  static forRoot(config = {name: 'requests'}): ModuleWithProviders {
+  static forRoot(stateClasses: StateClass[], requestsStateName: string = 'requests'): ModuleWithProviders<RequestsModule> {
     return {
-      ngModule: createModule(RequestsModule, config.name),
+      ngModule: RequestsModule,
       providers: [
+        RequestsState,
+        ...stateClasses,
+        {
+          provide: FEATURE_STATE_TOKEN,
+          multi: true,
+          useFactory: stateClassFactory,
+          deps: [NGXS_REQUEST_PLUGIN_REQUESTS_PATH_OPTIONS, NGXS_REQUEST_PLUGIN_STATE_CLASSES]
+        },
         {
           provide: NGXS_PLUGINS,
           useClass: NgxsRequestsPlugin,
-          multi: true
+          multi: true,
         },
         {
-          provide: NGXS_REQUEST_PLUGIN_OPTIONS,
-          useValue: config
-        }
+          provide: NGXS_REQUEST_PLUGIN_STATE_CLASSES,
+          useValue: stateClasses
+        },
+        {
+          provide: NGXS_REQUEST_PLUGIN_REQUESTS_PATH_OPTIONS,
+          useValue: requestsStateName
+        },
       ]
     };
   }

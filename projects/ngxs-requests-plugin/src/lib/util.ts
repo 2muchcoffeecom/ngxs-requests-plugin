@@ -1,27 +1,46 @@
-import { __decorate } from 'tslib';
-import { State } from '@ngxs/store';
-
 import { IRequest } from './request.interface';
 import { RequestStatus } from './request-status.enum';
+import { StateClassInternal } from '@ngxs/store/src/internal/internals';
 
-export let states = [];
+export function createRequestAction<T = any, U = any, I = any>(data: {
+  request: T;
+  state: StateClassInternal;
+  successAction?: U;
+  failAction?: I;
+  metadata?: any;
+}) {
+  const CreateRequest = class {
+    static type = `[Request] ${data.state.NGXS_OPTIONS_META.name} Start`;
 
-export function createRequestState(name) {
-  const requestState = class {
+    constructor(public payload: typeof data) {
+    }
   };
 
-  __decorate(
-    [State({
-      name,
-      defaults: requestInitialState
-    })], requestState
-  );
-
-  states.push(requestState);
-
-  return requestState;
+  return new CreateRequest(data);
 }
 
+
+export function createRequestSuccessAction(data: any, statePath: string) {
+  const CreateRequestSuccess = class {
+    static type = `[Request] ${statePath} Success`;
+
+    constructor(public payload: typeof data, public path: string) {
+    }
+  };
+
+  return new CreateRequestSuccess(data, statePath);
+}
+
+export function createRequestFailAction(data: any, statePath: string) {
+  const CreateRequestFail = class {
+    static type = `[Request] ${statePath} Fail`;
+
+    constructor(public payload: typeof data, public path: string) {
+    }
+  };
+
+  return new CreateRequestFail(data, statePath);
+}
 
 export const requestInitialState: IRequest = {
   loading: false,
