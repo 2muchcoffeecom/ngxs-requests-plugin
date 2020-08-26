@@ -3,6 +3,127 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
+    "test": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "examples/test",
+      "sourceRoot": "examples/test/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/test",
+            "index": "examples/test/src/index.html",
+            "main": "examples/test/src/main.ts",
+            "polyfills": "examples/test/src/polyfills.ts",
+            "tsConfig": "examples/test/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "examples/test/src/favicon.ico",
+              "examples/test/src/assets"
+            ],
+            "styles": [
+              "examples/test/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "examples/test/src/environments/environment.ts",
+                  "with": "examples/test/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "test:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "test:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "test:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "examples/test/src/test.ts",
+            "polyfills": "examples/test/src/polyfills.ts",
+            "tsConfig": "examples/test/tsconfig.spec.json",
+            "karmaConfig": "examples/test/karma.conf.js",
+            "assets": [
+              "examples/test/src/favicon.ico",
+              "examples/test/src/assets"
+            ],
+            "styles": [
+              "examples/test/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "examples/test/tsconfig.app.json",
+              "examples/test/tsconfig.spec.json",
+              "examples/test/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "examples/test/e2e/protractor.conf.js",
+            "devServerTarget": "test:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "test:serve:production"
+            }
+          }
+        }
+      }
+    },
     "ngxs-requests-plugin": {
       "projectType": "library",
       "root": "projects/ngxs-requests-plugin",
@@ -14,6 +135,11 @@
           "options": {
             "tsConfig": "projects/ngxs-requests-plugin/tsconfig.lib.json",
             "project": "projects/ngxs-requests-plugin/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngxs-requests-plugin/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {

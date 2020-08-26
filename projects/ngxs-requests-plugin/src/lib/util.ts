@@ -1,6 +1,6 @@
 import { IRequest } from './request.interface';
 import { RequestStatus } from './request-status.enum';
-import { StateClassInternal } from '@ngxs/store/src/internal/internals';
+import { StateClassInternal } from './state-class-internal.interface';
 
 export function createRequestAction<T = any, U = any, I = any>(data: {
   request: T;

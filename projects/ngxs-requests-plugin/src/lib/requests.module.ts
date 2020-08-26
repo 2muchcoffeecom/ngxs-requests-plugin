@@ -1,16 +1,16 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
-import { NGXS_PLUGINS, NgxsModule, State } from '@ngxs/store';
-import { ɵd as FEATURE_STATE_TOKEN } from '@ngxs/store';
-import { StateClass } from '@ngxs/store/internals';
+import { NGXS_PLUGINS, NgxsModule, State, ɵd as FEATURE_STATE_TOKEN } from '@ngxs/store';
+
 import { NGXS_REQUEST_PLUGIN_REQUESTS_PATH_OPTIONS, NGXS_REQUEST_PLUGIN_STATE_CLASSES, NgxsRequestsPlugin } from './requests.service';
 import { RequestsState } from './requests.state';
-
+import { StateClass } from '@ngxs/store/internals';
 
 export function stateClassFactory(name: string, states: StateClass[]) {
   State({
     name,
     children: states
   })(RequestsState);
+
   return [RequestsState, ...states];
 }
 

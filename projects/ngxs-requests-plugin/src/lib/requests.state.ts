@@ -1,3 +1,5 @@
-export class RequestsState {
+import { Injectable } from '@angular/core';
 
+@Injectable()
+export class RequestsState {
 }
