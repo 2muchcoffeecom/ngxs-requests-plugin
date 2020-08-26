@@ -1,12 +1,17 @@
-# Ngxs Requests Plugin
+# NgxsRequestsPlugin
+NgxsRequestsPlugin is used to store the state of the request and response from the server into the request state
 
-## Install
+## Installation
 
-`npm i --save serve ngxs-requests-plugin`
+`
+npm install ngxs-requests-plugin --save`
 
-## Подключение
+or if you are using yarn\
+`yarn add ngxs-requests-plugin
+`
 
-Там где вы используете `NgxsModule.forRoot`, подключите также и `NgxsRequestsPluginModule.forRoot()`
+## Connection
+Include `NgxsRequestsPluginModule.forRoot()` in the same place where you use `NgxsModule.forRoot`
 ```typescript
 import { NgxsRequestsPluginModule } from 'ngxs-requests-plugin';
 
@@ -19,14 +24,21 @@ import { NgxsRequestsPluginModule } from 'ngxs-requests-plugin';
 export class NgxsStoreModule {
 }
 ```
-## Использование
-* Создайте переменную в которой будет храниться динамически созданный request state  
-    ```typescript
-      import { createRequestState } from 'ngxs-requests-plugin';
-      export const signInRequestState = createRequestState('signIn');
-    ```
 
-* В вашем state используйте CreateRequest для создания реквеста, в `path` указывайте тотже путь что и при создании динамического state
+## Using
+* Create an empty class with the `RequestState` decorator
+    ```typescript
+      import { Injectable } from '@angular/core';
+      import { RequestState } from 'ngxs-requests-plugin';
+  
+      @Injectable()
+      @RequestState('signIn')
+      export class SignInRequestState {
+      }
+    ```
+  The argument of `RequestState` decorator will be use as a name of the requests state slice. Note: The argument is a required and must be unique for the entire application.  
+
+* Use `CreateRequestAction` for request creation
     ```typescript
     @State<AuthStateModel>({
       name: 'auth',
@@ -34,8 +46,7 @@ export class NgxsStoreModule {
         token: null,
       },
     })
-    export class AuthState implements NgxsAfterBootstrap {
-    
+    export class AuthState implements NgxsAfterBootstrap {  
       constructor(
         private httpClient: HttpClient
       ) {
@@ -45,8 +56,8 @@ export class NgxsStoreModule {
       signIn(ctx: StateContext<AuthStateModel>, action: SignIn) {
         const request = this.httpClient.post('serverUrl/signIn', {});
     
-        return ctx.dispatch(new CreateRequest({
-          path: 'signIn',
+        return ctx.dispatch(new CreateRequestAction({
+          state: SignInRequestState,
           request,
           successAction: SignInSuccess,
           failAction: SignInFail,
@@ -64,14 +75,35 @@ export class NgxsStoreModule {
       }
     }
     ```
+    CreateRequestAction parameters:
+      * request - required field. Usually, it's observable returned from the `HttpClient`
+      * state - required field. Class with `RequestState` decorator
+      * successAction - action, which will be called on the successful request
+      * failAction - action, which will be called if the request responded with an error
+      * metadata - additional data that can be received in `successAction` and `failAction`
 
-* Для получения данных реквестов, используйте динамически созданный стейт
+* To get the request data and its state, use the `Select` decorator. Pass the previously created class with the `RequestState` decorator as an argument to` Select`  
     ```typescript
     @Injectable({
       providedIn: 'root',
     })
     export class AuthService {
-      @Select(signInRequestState)
+      @Select(SignInRequestState)
       signInRequestState$: Observable<IRequest>;
+    }
+    ```
+    Also you need to include your class with `RequestState` decorator in NgxsRequestsPluginModule
+    ```typescript
+    import { NgxsRequestsPluginModule } from 'ngxs-requests-plugin';
+    
+    @NgModule({
+      imports: [
+        NgxsModule.forRoot([...]),
+        NgxsRequestsPluginModule.forRoot([
+          SignInRequestState
+        ]),
+      ],
+    })
+    export class NgxsStoreModule {
     }
     ```
