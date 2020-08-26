@@ -36,7 +36,9 @@ export class NgxsStoreModule {
       export class SignInRequestState {
       }
     ```
-  The argument of `RequestState` decorator will be use as a name of the requests state slice. Note: The argument is a required and must be unique for the entire application.  
+  The argument of `RequestState` decorator will be use as a name of the requests state slice.
+  <br>
+  Note: The argument is a required and must be unique for the entire application.  
 
 * Use `CreateRequestAction` for request creation
     ```typescript
@@ -76,11 +78,11 @@ export class NgxsStoreModule {
     }
     ```
     CreateRequestAction parameters:
-      * request - required field. Usually, it's observable returned from the `HttpClient`
-      * state - required field. Class with `RequestState` decorator
-      * successAction - action, which will be called on the successful request
-      * failAction - action, which will be called if the request responded with an error
-      * metadata - additional data that can be received in `successAction` and `failAction`
+    * request - required field. Usually, it's observable returned from the `HttpClient`
+    * state - required field. Class with `RequestState` decorator
+    * successAction - action, which will be called on the successful request
+    * failAction - action, which will be called if the request responded with an error
+    * metadata - additional data that can be received in `successAction` and `failAction`
 
 * To get the request data and its state, use the `Select` decorator. Pass the previously created class with the `RequestState` decorator as an argument to` Select`  
     ```typescript
