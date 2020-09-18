@@ -61,7 +61,7 @@ export class NgxsRequestsPlugin implements NgxsPlugin {
                 createRequestFailAction(error, action.payload.state.NGXS_OPTIONS_META.name),
               ];
               if (action.payload.failAction) {
-                failActions.push(new action.payload.failAction(error));
+                failActions.push(new action.payload.failAction(error, action.payload.metadata));
               }
               return store.dispatch(failActions).pipe(
                 mapTo(throwError(error))
