@@ -25,9 +25,10 @@ export class NgxsRequestsPlugin implements NgxsPlugin {
   handle(oldState, action, next) {
     let state = {...oldState};
     const type = getActionTypeFromInstance(action);
+    const stateName: undefined | string = action?.payload?.state?.NGXS_OPTIONS_META?.name;
 
-    if (action.payload && action.payload.state && type === `[Request] ${action.payload.state.NGXS_OPTIONS_META.name} Start`) {
-      state = setValue(state, `${this.requestsPath}.${action.payload.state.NGXS_OPTIONS_META.name}`, requestLoadingState);
+    if (stateName && type === `[Request] ${stateName} Start`) {
+      state = setValue(state, `${this.requestsPath}.${stateName}`, requestLoadingState);
     }
 
     if (action.path && type === `[Request] ${action.path} Success`) {
@@ -41,13 +42,13 @@ export class NgxsRequestsPlugin implements NgxsPlugin {
     return next(state, action)
     .pipe(
       switchMap(response => {
-        if (action.payload && action.payload.state && type === `[Request] ${action.payload.state.NGXS_OPTIONS_META.name} Start`) {
+        if (stateName && type === `[Request] ${stateName} Start`) {
           const store = this.injector.get(Store);
 
           return action.payload.request.pipe(
             switchMap(res => {
               const successActions = [
-                createRequestSuccessAction(res, action.payload.state.NGXS_OPTIONS_META.name)
+                createRequestSuccessAction(res, stateName)
               ];
               if (action.payload.successAction) {
                 successActions.push(new action.payload.successAction(res, action.payload.metadata));
@@ -58,7 +59,7 @@ export class NgxsRequestsPlugin implements NgxsPlugin {
             }),
             catchError((error) => {
               const failActions = [
-                createRequestFailAction(error, action.payload.state.NGXS_OPTIONS_META.name),
+                createRequestFailAction(error, stateName),
               ];
               if (action.payload.failAction) {
                 failActions.push(new action.payload.failAction(error, action.payload.metadata));
