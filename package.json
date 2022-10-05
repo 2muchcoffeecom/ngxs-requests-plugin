@@ -6,7 +6,7 @@
     "start": "ng serve",
     "serve:test": "ng serve --prod --project test",
     "build": "ng build",
-    "build-lib": "ng build ngxs-requests-plugin --prod",
+    "build-lib": "ng build ngxs-requests-plugin --configuration production",
     "publish-lib": "npm publish ./dist/ngxs-requests-plugin",
     "publish-lib:beta": "npm publish ./dist/ngxs-requests-plugin --tag beta",
     "test": "ng test",
