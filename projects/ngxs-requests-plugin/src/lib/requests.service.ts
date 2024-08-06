@@ -22,7 +22,7 @@ export class NgxsRequestsPlugin implements NgxsPlugin {
   ) {
   }
 
-  handle(oldState, action, next) {
+  handle(oldState: any, action: any, next: any) {
     let state = {...oldState};
     const type = getActionTypeFromInstance(action);
     const stateName: undefined | string = action?.payload?.state?.NGXS_OPTIONS_META?.name;

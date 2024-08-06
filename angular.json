@@ -131,23 +131,28 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "tsConfig": "projects/ngxs-requests-plugin/tsconfig.lib.json",
             "project": "projects/ngxs-requests-plugin/ng-package.json"
           },
           "configurations": {
             "production": {
               "tsConfig": "projects/ngxs-requests-plugin/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ngxs-requests-plugin/tsconfig.lib.json"
             }
-          }
+          },
+          "defaultConfiguration": "production"
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ngxs-requests-plugin/src/test.ts",
-            "tsConfig": "projects/ngxs-requests-plugin/tsconfig.spec.json",
-            "karmaConfig": "projects/ngxs-requests-plugin/karma.conf.js"
+            "tsConfig": "projects/ngxs-requests/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
           }
         },
         "lint": {

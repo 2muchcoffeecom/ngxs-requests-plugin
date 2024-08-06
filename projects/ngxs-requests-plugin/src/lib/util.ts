@@ -10,7 +10,7 @@ export function createRequestAction<T = any, U = any, I = any>(data: {
   metadata?: any;
 }) {
   const CreateRequest = class {
-    static type = `[Request] ${data.state.NGXS_OPTIONS_META.name} Start`;
+    static type = `[Request] ${data?.state?.NGXS_OPTIONS_META?.name} Start`;
 
     constructor(public payload: typeof data) {
     }

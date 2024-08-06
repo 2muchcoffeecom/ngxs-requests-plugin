@@ -1,5 +1,5 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
-import { NGXS_PLUGINS, NgxsModule, State, ɵd as FEATURE_STATE_TOKEN } from '@ngxs/store';
+import { NGXS_PLUGINS, NgxsModule, State } from '@ngxs/store';
 
 import { NGXS_REQUEST_PLUGIN_REQUESTS_PATH_OPTIONS, NGXS_REQUEST_PLUGIN_STATE_CLASSES, NgxsRequestsPlugin } from './requests.service';
 import { RequestsState } from './requests.state';
@@ -21,13 +21,19 @@ export function stateClassFactory(name: string, states: StateClass[]) {
 })
 export class RequestsModule {
   static forRoot(stateClasses: StateClass[], requestsStateName: string = 'requests'): ModuleWithProviders<RequestsModule> {
+
+    // TODO fetch FEATURE_STATE_TOKEN from import
+    const featureStateProvider: any = NgxsModule.forFeature()?.providers?.find((provider: any) => {
+      return provider?.provide?._desc === 'FEATURE_STATE_TOKEN';
+    })
+
     return {
       ngModule: RequestsModule,
       providers: [
         RequestsState,
         ...stateClasses,
         {
-          provide: FEATURE_STATE_TOKEN,
+          provide: featureStateProvider.provide,
           multi: true,
           useFactory: stateClassFactory,
           deps: [NGXS_REQUEST_PLUGIN_REQUESTS_PATH_OPTIONS, NGXS_REQUEST_PLUGIN_STATE_CLASSES]
