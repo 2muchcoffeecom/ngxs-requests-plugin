@@ -12,18 +12,10 @@
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "paths": {
-      "@ngxs/requests-plugin": [
-        "dist/ngxs/requests-plugin"
-      ],
-      "@ngxs/requests-plugin/*": [
-        "dist/ngxs/requests-plugin/*"
-      ],
-      "ngxs-requests-plugin": [
-        "dist/ngxs-requests-plugin"
-      ],
-      "ngxs-requests-plugin/*": [
-        "dist/ngxs-requests-plugin/*"
-      ]
+      "@ngxs/requests-plugin": ["dist/ngxs/requests-plugin"],
+      "@ngxs/requests-plugin/*": ["dist/ngxs/requests-plugin/*"],
+      "ngxs-requests-plugin": ["dist/ngxs-requests-plugin"],
+      "ngxs-requests-plugin/*": ["dist/ngxs-requests-plugin/*"]
     },
     "declaration": false,
     "downlevelIteration": true,
@@ -33,10 +25,7 @@
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
-    "lib": [
-      "ES2022",
-      "dom"
-    ]
+    "lib": ["ES2022", "dom"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

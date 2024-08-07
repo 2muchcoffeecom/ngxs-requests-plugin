@@ -1,15 +1,14 @@
-import { StoreOptions } from '@ngxs/store/src/symbols';
-import { StateClass } from '@ngxs/store/internals';
-import { State } from '@ngxs/store';
-import { requestInitialState } from './util';
+import { State } from "@ngxs/store";
+import { requestInitialState } from "./util";
+import { ɵStateClass, ɵStoreOptions } from "@ngxs/store/internals";
 
 export function RequestState<T = any>(name: string) {
-  const options: StoreOptions<any> = {
+  const options: ɵStoreOptions<any> = {
     name,
-    defaults: requestInitialState
+    defaults: requestInitialState,
   };
 
-  return (target: StateClass<T>) => {
+  return (target: ɵStateClass<T>) => {
     State<T>(options)(target);
   };
 }

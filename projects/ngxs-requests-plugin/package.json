@@ -1,6 +1,6 @@
 {
   "name": "ngxs-requests-plugin",
-  "version": "0.1.7",
+  "version": "0.1.8-beta.1",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/2muchcoffeecom/ngxs-requests-plugin.git"
@@ -13,8 +13,8 @@
   "author": "logvinoleg89 <logvinoleg89@gmail.com>",
   "license": "MIT",
   "peerDependencies": {
-    "@ngxs/store": ">=0.0.0",
-    "@angular/core": ">=15.0.0",
+    "@ngxs/store": ">=18.0.0",
+    "@angular/core": ">=16.0.0",
     "rxjs": ">=7.8.0"
   }
 }
