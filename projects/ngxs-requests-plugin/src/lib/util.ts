@@ -1,6 +1,6 @@
+import { ɵStateClassInternal as StateClassInternal } from '@ngxs/store/internals';
 import { IRequest } from './request.interface';
 import { RequestStatus } from './request-status.enum';
-import { StateClassInternal } from './state-class-internal.interface';
 
 export function createRequestAction<T = any, U = any, I = any>(data: {
   request: T;
@@ -15,7 +15,6 @@ export function createRequestAction<T = any, U = any, I = any>(data: {
     constructor(public payload: typeof data) {
     }
   };
-
   return new CreateRequest(data);
 }
 

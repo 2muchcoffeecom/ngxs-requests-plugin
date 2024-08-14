@@ -11,18 +11,16 @@ or if you are using yarn\
 `
 
 ## Connection
-Include `NgxsRequestsPluginModule.forRoot()` in the same place where you use `NgxsModule.forRoot`
+Provide `withNgxsRequestsPlugin` in the same place where you provide `provideStore`
 ```typescript
-import { NgxsRequestsPluginModule } from 'ngxs-requests-plugin';
+import { withNgxsRequestsPlugin } from 'ngxs-requests-plugin';
 
-@NgModule({
-  imports: [
-    NgxsModule.forRoot([...]),
-    NgxsRequestsPluginModule.forRoot(),
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideStore([]),
+    withNgxsRequestsPlugin([]),
   ],
-})
-export class NgxsStoreModule {
-}
+};
 ```
 
 ## Using
@@ -32,14 +30,50 @@ export class NgxsStoreModule {
       import { RequestState } from 'ngxs-requests-plugin';
   
       @Injectable()
-      @RequestState('signIn')
+      @RequestState('signInRequest')
       export class SignInRequestState {
       }
     ```
   The argument of `RequestState` decorator will be use as a name of the requests state slice.
   <br>
-  Note: The argument is a required and must be unique for the entire application.  
+  Note: The argument is a required and must be unique for the entire application.
+  <br>
+  The @Selector() decorator can be added for selecting the data from the store
+  ```typescript
+  import { Injectable } from '@angular/core';
+  import { RequestState } from 'ngxs-requests-plugin';
 
+  @Injectable()
+  @RequestState('signInRequest')
+  export class SignInRequestState {
+    @Selector()
+    static getRequestState(state: IRequest) {
+      return state;
+    }
+  }
+    ```
+  or it can be added to the separate getter class
+  ```typescript
+  export class SignInRequestGetterState {
+    @Selector([
+      SignInRequestState,
+    ])
+    static getRequestState(state: IRequest) {
+      return state;
+    }
+  }
+    ```
+  or reusable getter class can be created
+  ```typescript
+  export class RequestGetterState {
+    static getState(stateClass) {
+        return createSelector([stateClass], (state: IRequest) => state);
+    }
+  }
+    ```
+  Ane approach of creating selectors from the NGXS package can be used
+  <br>
+  <br>
 * Use `CreateRequestAction` for request creation
     ```typescript
     @State<AuthStateModel>({
@@ -63,6 +97,7 @@ export class NgxsStoreModule {
           request,
           successAction: SignInSuccess,
           failAction: SignInFail,
+          metadata: 'some additional data'
         }));
       }
     
@@ -77,35 +112,39 @@ export class NgxsStoreModule {
       }
     }
     ```
-    CreateRequestAction parameters:
-    * request - required field. Usually, it's observable returned from the `HttpClient`
-    * state - required field. Class with `RequestState` decorator
-    * successAction - action, which will be called on the successful request
-    * failAction - action, which will be called if the request responded with an error
-    * metadata - additional data that can be received in `successAction` and `failAction`
+  CreateRequestAction parameters:
+  * request - required field. Usually, it's observable returned from the `HttpClient`
+  * state - required field. Class with `RequestState` decorator
+  * successAction - action, which will be called on the successful request
+  * failAction - action, which will be called if the request responded with an error
+  * metadata - additional data that can be received in `successAction` and `failAction`
 
-* To get the request data and its state, use the `Select` decorator. Pass the previously created class with the `RequestState` decorator as an argument to` Select`  
+* To get the request data and its state, use any NGXS Store method for selecting state. Here are a few examples:
     ```typescript
-    @Injectable({
-      providedIn: 'root',
-    })
-    export class AuthService {
-      @Select(SignInRequestState)
-      signInRequestState$: Observable<IRequest>;
-    }
+  export class SignInComponent {
+      signInRequestState$: Observable<IRequest> = inject(Store).select((state) => state.signInRequest);
+  }
     ```
-    Also you need to include your class with `RequestState` decorator in NgxsRequestsPluginModule
+  ```typescript
+  export class SignInComponent {
+    signInRequestState$: Observable<IRequest> = inject(Store).select(SignInRequestState.getRequestState);
+  }
+    ```
     ```typescript
-    import { NgxsRequestsPluginModule } from 'ngxs-requests-plugin';
-    
-    @NgModule({
-      imports: [
-        NgxsModule.forRoot([...]),
-        NgxsRequestsPluginModule.forRoot([
-          SignInRequestState
-        ]),
-      ],
-    })
-    export class NgxsStoreModule {
-    }
+  export class SignInComponent {
+    signInRequestState$: Observable<IRequest> = inject(Store).select(RequestGetterState.getState(SignInRequestState));
+  }
     ```
+  Also, you need to include your classes with `RequestState` decorator in withNgxsRequestsPlugin provider
+  ```typescript
+  import { withNgxsRequestsPlugin } from 'ngxs-requests-plugin';
+  
+  export const appConfig: ApplicationConfig = {
+    providers: [
+      provideStore([],),
+      withNgxsRequestsPlugin([
+        SignInRequestState,
+      ]),
+    ],
+  };
+  ```
