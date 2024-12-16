@@ -1,6 +1,8 @@
 {
   "name": "ngxs-requests",
   "version": "0.0.0",
+  "license": "MIT",
+  "author": "2muchcoffee",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
